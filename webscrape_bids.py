@@ -21,7 +21,6 @@ class BidScrape():
         self.driver.get(url)
         self.page_counter = page_counter
         self.tab_counter = tab_counter 
-        self.row_counter = row_counter
     
     def query_search(self):
         driver = self.driver
@@ -34,25 +33,33 @@ class BidScrape():
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  "//*[@id='ctl00_CPH1_lnkVolver']"))).click()
        
     def page_jump(self):
-        driver = self.driver
-        for page in range(self.page_counter):
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[11]/a"))).click()
+        for scraped_pages in range(self.page_counter - 1):
+            WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[12]/td/table/tbody/tr/td[12]/a"))).click()
             
+    def tab_jump(self):
+        if self.tab_counter == 0:
+            pass
           
-    def wait(self, content):
-        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, content)))
-        time.sleep(3)
-        
-        
+    def wait(self):
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[12]/a")))
+
     def tab_lst(self):
-        self.wait(".pagination-gv a")
+        self.wait()
         tab_grid = self.driver.find_element_by_class_name("pagination-gv")
-        return tab_grid.find_elements_by_tag_name("a")
-        
+        return tab_grid.find_elements_by_tag_name("a")[1]
         
     def scrape(self):
         driver = self.driver
         tab_lst = self.tab_lst()
-
+        self.page_jump()
+        
+        
+        if (self.tab_counter % 10) > 1:
+            self.tab_jump(self.tab_counter % 10)
+        elif (self.tab_counter % 10) == 1:
+            pass
+    
         
         
                 
