@@ -37,9 +37,9 @@ class BidScrape():
         for scraped_pages in range(self.page_counter - 1):
             WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[12]/td/table/tbody/tr/td[12]/a"))).click()
             
-    def tab_jump(self):
-        if self.tab_counter == 0:
-            pass
+    def tab_jump(self, tab_lst):
+        self.wait()
+        tab_lst[(self.tab_counter % 10) + 1].click()
           
     def wait(self):
         WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[12]/a")))
@@ -53,13 +53,11 @@ class BidScrape():
         driver = self.driver
         tab_lst = self.tab_lst()
         self.page_jump()
-        
-        
-        if (self.tab_counter % 10) > 1:
-            self.tab_jump(self.tab_counter % 10)
-        elif (self.tab_counter % 10) == 1:
-            pass
+        if (self.tab_counter % 10) > 0:
+            self.tab_jump(tab_lst)
     
+    
+        #SET PAGE_COUNTER AND TAB_COUNTER CHANGES
         
         
                 
