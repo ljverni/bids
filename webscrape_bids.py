@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import re
-import unittest
 import time
 
 
@@ -89,3 +88,7 @@ class BidScrape():
 compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 1, 12, 113)
 compras_ar.query_search()
 compras_ar.scrape()
+
+
+
+test = "na"
