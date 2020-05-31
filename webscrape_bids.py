@@ -33,28 +33,31 @@ class BidScrape():
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  "//*[@id='ctl00_CPH1_lnkVolver']"))).click()
        
     def page_jump(self):
-        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[11]/a"))).click()
+        time.sleep(5)
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.LINK_TEXT, "..."))).click()
         for scraped_pages in range(self.page_counter - 1):
+            time.sleep(5)
             WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[12]/td/table/tbody/tr/td[12]/a"))).click()
             
     def tab_jump(self, tab_lst):
         self.wait()
-        tab_lst[(self.tab_counter % 10) + 1].click()
+        tab_lst[(self.tab_counter % 10)].click()
           
     def wait(self):
-        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[12]/a")))
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[12]/td/table/tbody/tr/td[12]/a")))
 
     def tab_lst(self):
         self.wait()
         tab_grid = self.driver.find_element_by_class_name("pagination-gv")
-        return tab_grid.find_elements_by_tag_name("a")[1]
+        return 
         
     def scrape(self):
         driver = self.driver
-        tab_lst = self.tab_lst()
         self.page_jump()
-        if (self.tab_counter % 10) > 0:
-            self.tab_jump(tab_lst)
+    
+        # if (self.tab_counter % 10) > 0:
+  
+            
     
     
         #SET PAGE_COUNTER AND TAB_COUNTER CHANGES
@@ -88,6 +91,6 @@ class BidScrape():
     
 
         
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 1, 12, 113)
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 2, 12, 113)
 compras_ar.query_search()
 compras_ar.scrape()
