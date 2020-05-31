@@ -22,17 +22,6 @@ class BidScrape():
         self.page_counter = page_counter
         self.tab_counter = tab_counter 
         self.row_counter = row_counter
-        
-    def wait_for_id(self, element, condition):
-        driver = self.driver
-        if element == "id":
-            driver = self.driver
-        WebDriverWait(driver, 20).until(
-            lambda driver: driver.find_element_by_id(condition))
-        if element == "class":
-            driver = self.driver
-        WebDriverWait(driver, 20).until(
-            lambda driver: driver.find_element_by_class_name(condition))
     
     def query_search(self):
         driver = self.driver
@@ -44,51 +33,56 @@ class BidScrape():
         driver = self.driver
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  "//*[@id='ctl00_CPH1_lnkVolver']"))).click()
        
-    def tab_jump(self):
-        tab_jumps = int((self.tab_counter - (self.tab_counter % 10)) / 10) 
+    def page_jump(self):
         driver = self.driver
-        for jump in tab_jumps:
-            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[{12}]/a"))).click()
+        for page in range(self.page_counter):
+            
+          
+    def wait(self, content):
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, content)))
+        time.sleep(3)
+        
+        
+    def tab_lst(self):
+        self.wait(".pagination-gv a")
+        tab_grid = self.driver.find_element_by_class_name("pagination-gv")
+        return tab_grid.find_elements_by_tag_name("a")
+        
         
     def scrape(self):
-        if str((self.tab_counter % 10) + 1) < 3:
-            next_tab = "3"
-        next_tab = str((self.tab_counter % 10) + 1)
-        driver = self.driver       
-        try:
-            for tab in range(next_tab, 10):
-                WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[{tab}]/a"))).click()
+        driver = self.driver
+        tab_lst = self.tab_lst()
+
+        
+        
                 
-                for row in range(2, 12):
-                    row = format(row, "02d")
-                    time.sleep(10)
-                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))).click()
-                    self.extract()
-                    self.row_counter += 1
-                    print("Row " + str(self.row_counter) + " scraped")
+        
+        #         for row in range(2, 12):
+        #             row = format(row, "02d")
+        #             time.sleep(10)
+        #             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))).click()
+        #             self.extract()
+        #             self.row_counter += 1
+        #             print("Row " + str(self.row_counter) + " scraped")
                     
-                self.tab_counter += 1
-                print("Tab " + str(self.tab_counter) + " scraped")
+        #         self.tab_counter += 1
+        #         print("Tab " + str(self.tab_counter) + " scraped")
            
-            self.page_counter += 1
-            print("Page" + str(self.page_counter) + " scraped")
+        #     self.page_counter += 1
+        #     print("Page" + str(self.page_counter) + " scraped")
             
-        except (TimeoutException, NoSuchElementException) as error:
-            print("finalizing due to error...")
-            self.driver.quit()
-            print(self.page_counter, self.tab_counter, self.row_counter)
-            raise
+        # except (TimeoutException, NoSuchElementException) as error:
+        #     print("finalizing due to error...")
+        #     self.driver.quit()
+        #     print(self.page_counter, self.tab_counter, self.row_counter)
+        #     raise
             
-        print("Scraping successful")
-        self.driver.quit()
-        print(self.page_counter, self.tab_counter, self.row_counter)
+        # print("Scraping successful")
+        # self.driver.quit()
+        # print(self.page_counter, self.tab_counter, self.row_counter)
     
 
         
 compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 1, 12, 113)
 compras_ar.query_search()
 compras_ar.scrape()
-
-
-
-test = "na"
