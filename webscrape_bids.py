@@ -21,7 +21,8 @@ class BidScrape():
         self.driver.get(url)
         self.common_exceptions = (TimeoutException, ElementClickInterceptedException)
         self.page_counter = page_counter
-        self.tab_counter = tab_counter 
+        self.tab_counter = tab_counter
+        self.iteration = 0
     
     def query_search(self):
         driver = self.driver
@@ -53,7 +54,7 @@ class BidScrape():
             "currency": contract_info[7].text      
             } 
         products = [product.text for product in selector("m", "table[id*='gvLineaPliego']  span[id*='lblDescripcion']")]
-        products_qty = [qty.text for qty in selector("m", "table[id*='gvLineaPliego']  span[id*='lblDescripcion']")]
+        products_qty = [qty.text for qty in selector("m", "table[id*='gvLineaPliego']  span[id*='lblCantidad']")]
         data_products = {"bid_code": [], "product": [], "qty": []}
         for prod in range(len(products)):
             data_products["bid_code"].append(selector("s", "span[id*='NumeroProceso']"))
@@ -79,52 +80,62 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
 
-    def scrape(self, row):
+    def scrape(self):
         driver = self.driver
-        if self.page_counter > 0:
-            self.first_page_jump()
-        elif self.page_counter > 1:
-            for scraped_pages in range(self.page_counter - 1):
-                self.page_jump([12, 12])
-        if (self.tab_counter % 10) > 0:
-            self.tab_jump(self.tab_counter+1)
-        
-        data_main = {"bid_code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": [], "awarded_bidder": [], "awarder_bidder_id": [], "amount": [], "currency": []}
+        if self.iteration == 0:
+            if self.page_counter > 0:
+                self.first_page_jump()
+            if self.page_counter > 1:
+                for scraped_pages in range(self.page_counter - 1):
+                    self.page_jump([12, 12])
+            if (self.tab_counter % 10) > 0:
+                self.tab_jump(self.tab_counter)
+            
+        data_main = {"bid_code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": [], "awarded_bidder": [], "awarded_bidder_id": [], "amount": [], "currency": []}
         data_products = {"bid_code": [], "product": [], "qty": []}
+        try:
+            for row in range(2, 12):
+                row = format(row, "02d")
+                self.enter_process(row)
+                extracted_data = self.extract()
+                self.exit_process()
+                print("Row " + str(row) + " scraped")
+                for keys in data_main:
+                    data_main[keys].append(extracted_data[0][keys])
+                for keys in data_products:
+                    data_products[keys].append(extracted_data[1][keys])
+            
+            if self.tab_counter % 10 == 0:
+                self.tab_counter += 1
+                self.page_counter += 1
+                self.page_jump([11, 12])
+            else:
+                self.tab_counter += 1
+                self.tab_jump(self.tab_counter)
         
-        for row in range(2, 12):
-            row = format(row, "02d")
-            self.enter_process(row)
-            extracted_data = self.extract()
-            self.exit_process()
-            print("Row " + str(row) + " scraped")
-            for keys in data_main:
-                data_main[keys].append(extracted_data[0][keys])
-            for keys in data_products:
-                data_products[keys].append(extracted_data[1][keys])
+            return data_main, data_products
         
-        # if ((self.tab_counter+1) % 10) == 0:
-        #     self.page_jump([11, 12])
-        #     self.page_counter += 1
-        #     print("Page " + str(self.page_counter) + " scraped")
-        #     self.tab_counter += 1
-        #     print("Tab " + str(self.tab_counter) + " scraped")
-        # else:
-        #     self.tab_counter += 1
-        #     print("Tab " + str(self.tab_counter) + " scraped")
-        #     self.tab_jump(self.tab_counter + 1)
-        
-        return data_main, data_products
+        except:
+            compras_ar.driver.quit() 
+            print("error message")
+            return data_main, data_products
+                
         
             
-           
-        
+#OPEN JSON FILE WITH TAB_COUNTER AND PAGE_COUNTER AND INSERT THOSE VALUES IN CLASS OBJECT BIDSCRAPE            
                 
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 1, 18)
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 3, 39)
 compras_ar.query_search()
 
+try:
+    for n in range(5):
+        main_frame, product_frame = compras_ar.scrape()
+        print(main_frame) #CREATE JSON FILE1
+        print(product_frame)
+except:
+    compras_ar.driver.quit() 
+    
+    #CREATE JSON FILE2
 
-for n in range(1):
-    main_frame, product_frame = compras_ar.scrape(10)
-compras_ar.driver.quit() 
 
+#UPDATE JSON FILE WITH TAB_COUNTER AND PAGE_COUNTER
