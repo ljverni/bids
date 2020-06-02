@@ -53,7 +53,7 @@ class BidScrape():
             } 
         products = [product.text for product in selector("b", "span[id*='lblDescripcion']")]
         products_qty = [qty.text for qty in selector("b", "span[id*='lblCantidad']")]
-        data_products = {"bid_code": "", "product": "", "qty": ""}
+        data_products = {"bid_code": [], "product": [], "qty": []}
         for prod in range(len(products)):
             data_products["bid_code"].append(selector("u", "span[id*='NumeroProceso']"))
             data_products["product"].append(products[prod])
