@@ -53,7 +53,7 @@ class BidScrape():
             } 
         products = [product.text for product in selector("b", "span[id*='lblDescripcion']")]
         products_qty = [qty.text for qty in selector("b", "span[id*='lblCantidad']")]
-        data_products = {"bid_code": "", "product": "", "qty": ""}
+        data_products = {"bid_code": [], "product": [], "qty": []}
         for prod in range(len(products)):
             data_products["bid_code"].append(selector("u", "span[id*='NumeroProceso']"))
             data_products["product"].append(products[prod])
@@ -78,7 +78,7 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
 
-    def scrape(self, tab_n):
+    def scrape(self, row):
         driver = self.driver
         self.first_page_jump()
         if self.page_counter > 1:
@@ -86,15 +86,17 @@ class BidScrape():
                 self.page_jump([12, 12])
         if (self.tab_counter % 10) > 0:
             self.tab_jump(self.tab_counter+1)
-    
-        for n in range(tab_n):
-            for row in range(2, 12):
-                row = format(row, "02d")
-                self.enter_process(row)
-                extracted_data = self.extract()
-                self.exit_process()
-                print("Row " + str(row) + " scraped")
-            
+     
+        
+        row = format(row, "02d")
+        self.enter_process(row)
+        extracted_data = self.extract()
+        self.exit_process()
+        print("Row " + str(row) + " scraped")
+        
+        
+        
+        
             if ((self.tab_counter+1) % 10) == 0:
                 self.page_jump([11, 12])
                 self.page_counter += 1
@@ -113,7 +115,8 @@ compras_ar.query_search()
 compras_ar.scrape(10)
 
 
-
+   # for row in range(2, 12):
+# for n in range(tab_n):
 
 
 
