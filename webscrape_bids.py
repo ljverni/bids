@@ -29,33 +29,34 @@ class BidScrape():
         status.options[1].click()
         driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
         
-    def selector(self, qty, arg):
-        if qty == "u":
+    def selector(self, qty, arg): #Single(s) or Multiple(m) elements
+        if qty == "s":
             return self.driver.find_element_by_css_selector(arg).text
-        elif qty == "b":
+        elif qty == "m":
             return self.driver.find_elements_by_css_selector(arg)
         
     def extract(self):
+        time.sleep(5)
         selector = self.selector
-        contract_info = selector("b", "table[id*='DetalleImputacionAdjudicacion'] td")
+        contract_info = selector("m", "table[id*='DetalleImputacionAdjudicacion'] td") 
         data_main = {         
-            {"bid_code": selector("u", "span[id*='NumeroProceso']")}, 
-            {"name": selector("u", "span[id*='NombreProceso']")}, 
-            {"process": selector("u", "span[id*='ProcedimientoSeleccion']")}, 
-            {"stage": selector("u", "span[id*='Etapa']")}, 
-            {"validity": selector("u", "span[id*='MantenimientoOferta']")}, 
-            {"duration": selector("u", "span[id*='DuracionContrato']")}, 
-            {"opening": selector("u", "table[id*='ActasApertura'] p")}, 
-            {"awarded_bidder": contract_info[1].text}, 
-            {"awarder_bidder_id": contract_info[2].text}, 
-            {"amount": contract_info[6].text}, 
-            {"currency": contract_info[7].text}      
+            "bid_code": selector("s", "span[id*='NumeroProceso']"), 
+            "name": selector("s", "span[id*='NombreProceso']"), 
+            "process": selector("s", "span[id*='ProcedimientoSeleccion']"), 
+            "stage": selector("s", "span[id*='Etapa']"), 
+            "validity": selector("s", "span[id*='MantenimientoOferta']"), 
+            "duration": selector("s", "span[id*='DuracionContrato']"), 
+            "opening": selector("s", "table[id*='ActasApertura'] p"), 
+            "awarded_bidder": contract_info[1].text, 
+            "awarded_bidder_id": contract_info[2].text, 
+            "amount": contract_info[6].text, 
+            "currency": contract_info[7].text      
             } 
-        products = [product.text for product in selector("b", "span[id*='lblDescripcion']")]
-        products_qty = [qty.text for qty in selector("b", "span[id*='lblCantidad']")]
+        products = [product.text for product in selector("m", "table[id*='gvLineaPliego']  span[id*='lblDescripcion']")]
+        products_qty = [qty.text for qty in selector("m", "table[id*='gvLineaPliego']  span[id*='lblDescripcion']")]
         data_products = {"bid_code": [], "product": [], "qty": []}
         for prod in range(len(products)):
-            data_products["bid_code"].append(selector("u", "span[id*='NumeroProceso']"))
+            data_products["bid_code"].append(selector("s", "span[id*='NumeroProceso']"))
             data_products["product"].append(products[prod])
             data_products["qty"].append(products_qty[prod])
         return data_main, data_products
@@ -80,43 +81,50 @@ class BidScrape():
 
     def scrape(self, row):
         driver = self.driver
-        self.first_page_jump()
-        if self.page_counter > 1:
+        if self.page_counter > 0:
+            self.first_page_jump()
+        elif self.page_counter > 1:
             for scraped_pages in range(self.page_counter - 1):
                 self.page_jump([12, 12])
         if (self.tab_counter % 10) > 0:
             self.tab_jump(self.tab_counter+1)
-     
         
-        row = format(row, "02d")
-        self.enter_process(row)
-        extracted_data = self.extract()
-        self.exit_process()
-        print("Row " + str(row) + " scraped")
+        data_main = {"bid_code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": [], "awarded_bidder": [], "awarder_bidder_id": [], "amount": [], "currency": []}
+        data_products = {"bid_code": [], "product": [], "qty": []}
         
+        for row in range(2, 12):
+            row = format(row, "02d")
+            self.enter_process(row)
+            extracted_data = self.extract()
+            self.exit_process()
+            print("Row " + str(row) + " scraped")
+            for keys in data_main:
+                data_main[keys].append(extracted_data[0][keys])
+            for keys in data_products:
+                data_products[keys].append(extracted_data[1][keys])
         
+        # if ((self.tab_counter+1) % 10) == 0:
+        #     self.page_jump([11, 12])
+        #     self.page_counter += 1
+        #     print("Page " + str(self.page_counter) + " scraped")
+        #     self.tab_counter += 1
+        #     print("Tab " + str(self.tab_counter) + " scraped")
+        # else:
+        #     self.tab_counter += 1
+        #     print("Tab " + str(self.tab_counter) + " scraped")
+        #     self.tab_jump(self.tab_counter + 1)
         
+        return data_main, data_products
         
-            if ((self.tab_counter+1) % 10) == 0:
-                self.page_jump([11, 12])
-                self.page_counter += 1
-                print("Page " + str(self.page_counter) + " scraped")
-                self.tab_counter += 1
-                print("Tab " + str(self.tab_counter) + " scraped")
-            else:
-                self.tab_counter += 1
-                print("Tab " + str(self.tab_counter) + " scraped")
-                self.tab_jump(self.tab_counter + 1)
-        self.driver.quit()    
+            
+           
         
                 
 compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 1, 18)
 compras_ar.query_search()
-compras_ar.scrape(10)
 
 
-   # for row in range(2, 12):
-# for n in range(tab_n):
-
-
+for n in range(1):
+    main_frame, product_frame = compras_ar.scrape(10)
+compras_ar.driver.quit() 
 
