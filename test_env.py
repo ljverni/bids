@@ -1,3 +1,7 @@
-n = 21
+test = {"na": "", "ne": ""}
 
-print(n % 10)
+test["na"]["ne"] = ["ta", "te"]
+
+
+
+
