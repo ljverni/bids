@@ -15,6 +15,7 @@ import time
 
 link = "https://comprar.gob.ar/PLIEGO/VistaPreviaPliegoCiudadano.aspx?qs=BQoBkoMoEhzx8zvkTDdwTXg17CFDfb9gjz|hkhikVuyhUW1N8Tfv5zjexUkKfyHHxcg3AZulJorys/QkdmWV5fw7Z5QjQLd2M0P5kfWqNWehoUyNMe16yC4Pdh8gFi94uVNDZzV4kXjLgb2wbcE23HGRBQNBx|acgVvZv5d3Ya6JgsxUdFvBNQ=="
 
+class BidScrape():
 
     def __init__(self, url, page_counter, tab_counter):
         self.driver = webdriver.Chrome("\webdrivers\chromedriver.exe")
