@@ -1,11 +1,5 @@
-test = {"na": ["2"], "ne": ["5"]}
+from os import path
 
-test1 = {"na": "9", "ne": "7"}
-
-for keys in test:
-    test[keys].append(test1[keys])
-    
-    
-
-
+if not path.exists(fr"local_repo\bids\data_files\products_repdort.json"):
+    print("ok")
 

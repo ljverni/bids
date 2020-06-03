@@ -9,8 +9,14 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import NoSuchElementException
 import re
 import time
+from datetime import datetime
+from datetime import date
+from time import perf_counter
+import pandas as pd
+from os import path
+import json
 
-
+t1_start = perf_counter()
 class BidScrape():
 
     def __init__(self, url, page_counter, tab_counter):
@@ -93,49 +99,85 @@ class BidScrape():
             
         data_main = {"bid_code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": [], "awarded_bidder": [], "awarded_bidder_id": [], "amount": [], "currency": []}
         data_products = {"bid_code": [], "product": [], "qty": []}
-        try:
-            for row in range(2, 12):
-                row = format(row, "02d")
-                self.enter_process(row)
-                extracted_data = self.extract()
-                self.exit_process()
-                print("Row " + str(row) + " scraped")
-                for keys in data_main:
-                    data_main[keys].append(extracted_data[0][keys])
-                for keys in data_products:
-                    data_products[keys].append(extracted_data[1][keys])
-            
-            if self.tab_counter % 10 == 0:
-                self.tab_counter += 1
-                self.page_counter += 1
-                self.page_jump([11, 12])
-            else:
-                self.tab_counter += 1
-                self.tab_jump(self.tab_counter)
+
+        for row in range(2, 12):
+            row = format(row, "02d")
+            self.enter_process(row)
+            extracted_data = self.extract()
+            self.exit_process()
+            print("Row " + str(row) + " scraped")
+            for keys in data_main:
+                data_main[keys].append(extracted_data[0][keys])
+            for keys in data_products:
+                data_products[keys].append(extracted_data[1][keys])
         
-            return data_main, data_products
+        if self.tab_counter % 10 == 0 and self.tab_counter != 0:
+            self.tab_counter += 1
+            self.page_counter += 1
+            self.page_jump([11, 12])
+        else:
+            self.tab_counter += 1
+            self.tab_jump(self.tab_counter)
+        self.iteration += 1
+        return data_main, data_products
         
-        except:
-            compras_ar.driver.quit() 
-            print("error message")
-            return data_main, data_products
-                
-        
-            
-#OPEN JSON FILE WITH TAB_COUNTER AND PAGE_COUNTER AND INSERT THOSE VALUES IN CLASS OBJECT BIDSCRAPE            
-                
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 3, 39)
+
+#COUNTERS PULL
+path_counters = fr"local_repo\bids\data_files\counters.json"
+
+if path.exists(path_counters):
+    with open(path_counters) as c:
+        counters_current = json.load(c)
+    for counter in counters_current:
+        page_counter_current, tab_counter_current = counter["page_counter"], counter["tab_counter"]
+else:
+    page_counter_current, tab_counter_current = 0, 0
+
+
+#INSTANTIATION            
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", page_counter_current, tab_counter_current)
 compras_ar.query_search()
 
-try:
-    for n in range(5):
-        main_frame, product_frame = compras_ar.scrape()
-        print(main_frame) #CREATE JSON FILE1
-        print(product_frame)
-except:
-    compras_ar.driver.quit() 
+
+#CSV LOAD
+path_main = fr"local_repo\bids\data_files\bids_report.json"
+path_products = fr"local_repo\bids\data_files\products_report.json"
+
+for n in range(1):
+    main_data, product_data = compras_ar.scrape()
     
-    #CREATE JSON FILE2
+    df_main = pd.DataFrame().append(main_data, ignore_index=True)
+    df_products = pd.DataFrame().append(product_data, ignore_index=True)
+    
+    if path.exists(path_main):
+        df.to_csv(path_main, mode="a", index=False, header=False)
+    else:
+        df_main.to_csv(path_main, index=False)
+        
+    if path.exists(path_products):
+        df_products.to_csv(path_products, index=False)
+    else:
+        df_products.to_csv(path_products, mode="a", index=False, header=False)
 
 
-#UPDATE JSON FILE WITH TAB_COUNTER AND PAGE_COUNTER
+#JSON COUNTERS LOAD
+counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter}
+with open(path_counters, "w") as write_file:
+    json.dump(counters, write_file, indent=4)
+    
+
+#LOG FILE
+t1_stop = perf_counter() 
+time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
+timestamp = f"Timestamp: {datetime.now()}"
+pages = f"Pages completed: {compras_ar.page_counter - page_counter_current}\nCurrent page: {compras_ar.page_counter}"
+tabs = f"Tabs completed: {compras_ar.tab_counter - tab_counter_current}\nCurrent page: {compras_ar.tab_counter}"
+
+log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs 
+
+if path.exists(path_products):
+    with open(fr"local_repo\bids\data_files\bidslog.txt", "a+") as log_file:
+        log_file.write("\n------------------------\n")
+else:
+    with open(fr"local_repo\bids\data_files\bidslog.txt", "w") as file:
+        file.write(log)
