@@ -166,7 +166,12 @@ path_main = fr"local_repo\bids\report_bids.csv"
 path_providers = fr"local_repo\bids\report_providers.csv"
 path_products = fr"local_repo\bids\report_products.csv"
 
-for n in range(1):
+for n in range(5):
+    counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter} #JSOB COUNTER LOAD
+    with open(path_counters, "w") as write_file:
+        json.dump(counters, write_file, indent=4)
+    
+    print("TAB N°" + str(compras_ar.tab_counter))
     data_main, data_providers, data_products = compras_ar.scrape()
     
     df_main = pd.DataFrame(data_main)
@@ -183,12 +188,6 @@ for n in range(1):
         df_products.to_csv(path_products, mode="a", index=False, header=False)
 
 compras_ar.driver.quit()
-
-#JSON COUNTERS LOAD
-counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter}
-with open(path_counters, "w") as write_file:
-    json.dump(counters, write_file, indent=4)
-    
 
 #LOG FILE
 t1_stop = perf_counter() 
