@@ -1,0 +1,10 @@
+Elapsed time: 1106.1135586(Start), 1476.0796077(Stop) 
+Elapsed time during the whole program in seconds: 369.96604909999996
+Timestamp: 2020-06-03 15:08:07.288057
+Pages completed: 0
+Current page: 1
+Tabs completed: 1
+Current tab: 2
+Rows completed: 10
+
+------------------------
