@@ -16,7 +16,6 @@ import pandas as pd
 from os import path
 import json
 
-t1_start = perf_counter()
 class BidScrape():
 
     def __init__(self, url, page_counter, tab_counter):
@@ -31,6 +30,39 @@ class BidScrape():
         self.row_counter = 0
         self.iteration = 0
     
+    def log_file(self, t1_start, t1_stop):
+        time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
+        timestamp = f"Timestamp: {datetime.now()}"
+        pages = f"Current page: {self.page_counter}"
+        tabs = f"Current tab: {self.tab_counter}"
+        log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + "\n------------------------\n"
+        print(log)
+        with open(fr"local_repo\bids\bidslog.txt", "a+") as file:
+            file.write(log)  
+            
+    def file_save(self, data_main, data_providers, data_products):
+        path_main = fr"local_repo\bids\report_bids.csv"
+        path_providers = fr"local_repo\bids\report_providers.csv"
+        path_products = fr"local_repo\bids\report_products.csv"
+        df_main = pd.DataFrame(data_main)
+        df_providers = pd.DataFrame(data_providers)
+        df_products = pd.DataFrame(data_products)
+    
+        df_main.to_csv(path_main, mode="a", index=False, header=False)
+        df_providers.to_csv(path_providers, mode="a", index=False, header=False)
+        df_products.to_csv(path_products, mode="a", index=False, header=False)
+        
+        
+    def counters_save(self):
+        counters = {"page_counter": self.page_counter, "tab_counter": self.tab_counter} 
+        with open(fr"local_repo\bids\counters.json", "w") as write_file:
+            json.dump(counters, write_file, indent=4)  
+            
+    def counters_load(self):
+        with open(fr"local_repo\bids\counters.json") as c:
+            counters_current = json.load(c)
+            self.current_page, self.current_tab = counters_current["page_counter"], counters_current["tab_counter"]
+        
     def query_search(self):
         driver = self.driver
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
@@ -116,58 +148,32 @@ class BidScrape():
             self.page_counter += 1
         self.tab_jump()
         self.iteration += 1
-
+        print("CURRENT TAB" + str(compras_ar.tab_counter))
         return data_main, data_providers, data_products
         
-###############
-#COUNTERS PULL#
-###############
-path_counters = fr"local_repo\bids\counters.json"
 
-with open(path_counters) as c:
-    counters_current = json.load(c)
-    current_page, current_tab = counters_current["page_counter"], counters_current["tab_counter"]
-
-###############
-#INSTANTIATION#
-###############           
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", current_page, current_tab)
+###########
+#EXECUTION#
+###########           
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
+compras_ar.counters_load()
 compras_ar.query_search()
 
-##########
-#CSV LOAD#
-##########
-path_main = fr"local_repo\bids\report_bids.csv"
-path_providers = fr"local_repo\bids\report_providers.csv"
-path_products = fr"local_repo\bids\report_products.csv"
+try:
+    for n in range(5):
+        t1_start = perf_counter()
+        compras_ar.file_save(compras_ar.scrape())
+        compras_ar.counters_save()
 
-for n in range(5):
-    counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter}
-    with open(path_counters, "w") as write_file:
-        json.dump(counters, write_file, indent=4)
+except TimeoutException as error:
+    raise error
+
+finally:
+    t1_stop = perf_counter() 
+    compras_ar.log_file(t1_start, t1_stop)
+    compras_ar.driver.quit()
     
-    print("TAB N°" + str(compras_ar.tab_counter))
-    data_main, data_providers, data_products = compras_ar.scrape()
-    
-    df_main = pd.DataFrame(data_main)
-    df_providers = pd.DataFrame(data_providers)
-    df_products = pd.DataFrame(data_products)
-    
-    # df_main.to_csv(path_main, mode="a", index=False, header=False)
-    # df_providers.to_csv(path_providers, mode="a", index=False, header=False)
-    # df_products.to_csv(path_products, mode="a", index=False, header=False)
 
-compras_ar.driver.quit()
 
-##########
-#LOG FILE#
-##########
-t1_stop = perf_counter() 
-time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
-timestamp = f"Timestamp: {datetime.now()}"
-pages = f"Pages completed: {compras_ar.page_counter - page_counter_current - 1}\nCurrent page: {compras_ar.page_counter}"
-tabs = f"Tabs completed: {compras_ar.tab_counter - tab_counter_current - 1}\nCurrent tab: {compras_ar.tab_counter}"
-rows = f"Rows completed: {compras_ar.row_counter}"
 
-log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + rows + "\n" + "\n------------------------\n"
-print(log)
+
