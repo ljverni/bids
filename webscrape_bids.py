@@ -37,7 +37,7 @@ class BidScrape():
         status.options[1].click()
         driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
         
-    def selector(self, qty, arg): #Single(s) or Multiple(m) elements
+    def selector(self, qty, arg): #SINGLE(s)/MULTIPLE(m) ELEMENTS
         if qty == "s":
             return self.driver.find_element_by_css_selector(arg).text
         elif qty == "m":
@@ -80,85 +80,61 @@ class BidScrape():
             
     def exit_process(self):
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_lnkVolver']"))))
+                   
+    def tab_jump(self):
+        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[href*='Page${self.tab_counter}']"))))
         
-    def first_page_jump(self):
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[11]/a"))))
-      
-    def page_jump(self, idx):
-        time.sleep(5)
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[12]/a"))))
-            
-    def tab_jump(self, tab_idx):
-        time.sleep(5)
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.LINK_TEXT, f"{tab_idx}"))))
+    def page_jump(self):
+        for i in range(1, self.page_counter + 1):
+            last_tab = f"{i}{1}"
+            self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[href*='Page${last_tab}']"))))
          
     def enter_process(self, row):
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
-        
-    def page_jump_first_iteration(self):
-        if self.page_counter > 1:
-                self.first_page_jump()
-        elif self.page_counter > 2:
-            for scraped_pages in range(self.page_counter - 1):
-                self.page_jump([12, 12]) 
-        elif self.page_counter == 0:
-            self.page_counter += 1
-       
-    def tab_jump_first_iteration(self):
-        if (self.tab_counter % 10) > 1:
-            self.tab_jump(self.tab_counter)
 
     def scrape(self):
         driver = self.driver
         if self.iteration == 0:
-            self.page_jump_first_iteration()
-            self.tab_jump_first_iteration()
+            self.page_jump()
+            self.tab_jump()
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
-        
+      
         for row in range(1, 11):
             f_row = format(row+1, "02d")
             self.enter_process(f_row)
-            extracted_data = self.extract()
             self.exit_process()
             print("Row " + str(row) + " scraped")
             self.row_counter += 1
-            
-            for keys in extracted_data[0]: #MAIN DICT
-                data_main[keys].append(extracted_data[0][keys])
-            for key in extracted_data[1]: #PROVIDERS DICT
-                for value in extracted_data[1][key]:
-                    data_providers[key].append(value)     
-            for key in extracted_data[2]: #PRODUCTS DICT
-                for value in extracted_data[2][key]:
-                    data_products[key].append(value)
-                    
-        if self.tab_counter % 10 == 0 and self.tab_counter != 0:
-            self.page_jump([11, 12])
-            self.tab_counter += 1
+        
+        self.tab_counter += 1
+        if (self.tab_counter % 10) == 1:
             self.page_counter += 1
-        else:
-            self.tab_counter += 1
-            self.tab_jump(self.tab_counter)
+        self.tab_jump()
         self.iteration += 1
+
         return data_main, data_providers, data_products
         
-
-#COUNTERS PULL
+###############
+#COUNTERS PULL#
+###############
 path_counters = fr"local_repo\bids\counters.json"
 
 with open(path_counters) as c:
     counters_current = json.load(c)
     page_counter_current, tab_counter_current = counters_current["page_counter"], counters_current["tab_counter"]
 
-#INSTANTIATION            
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", page_counter_current, tab_counter_current)
+###############
+#INSTANTIATION#
+###############           
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 4, 50)
 compras_ar.query_search()
 
-
-#CSV LOAD
+##########
+#CSV LOAD#
+##########
 path_main = fr"local_repo\bids\report_bids.csv"
 path_providers = fr"local_repo\bids\report_providers.csv"
 path_products = fr"local_repo\bids\report_products.csv"
@@ -175,18 +151,15 @@ for n in range(5):
     df_providers = pd.DataFrame(data_providers)
     df_products = pd.DataFrame(data_products)
     
-    if not path.exists(path_main) and not path.exists(path_providers) and not path.exists(path_products):
-        df_main.to_csv(path_main, index=False)
-        df_providers.to_csv(path_providers, index=False)
-        df_products.to_csv(path_products, index=False)
-    else:
-        df_main.to_csv(path_main, mode="a", index=False, header=False)
-        df_providers.to_csv(path_providers, mode="a", index=False, header=False)
-        df_products.to_csv(path_products, mode="a", index=False, header=False)
+    df_main.to_csv(path_main, mode="a", index=False, header=False)
+    df_providers.to_csv(path_providers, mode="a", index=False, header=False)
+    df_products.to_csv(path_products, mode="a", index=False, header=False)
 
 compras_ar.driver.quit()
 
-#LOG FILE
+##########
+#LOG FILE#
+##########
 t1_stop = perf_counter() 
 time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
 timestamp = f"Timestamp: {datetime.now()}"
@@ -196,10 +169,3 @@ rows = f"Rows completed: {compras_ar.row_counter}"
 
 log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + rows + "\n" + "\n------------------------\n"
 print(log)
-
-if path.exists(path_counters):
-    with open(fr"local_repo\bids\bidslog.txt", "a+") as file:
-        file.write(log)       
-else:
-    with open(fr"local_repo\bids\bidslog.txt", "w") as file:
-        file.write(log)
