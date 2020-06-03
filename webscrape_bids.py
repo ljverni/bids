@@ -86,7 +86,7 @@ class BidScrape():
       
     def page_jump(self, idx):
         time.sleep(5)
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, f"//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[{idx[0]}]/td/table/tbody/tr/td[{idx[1]}]/a"))))
+        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_GridListaPliegos']/tbody/tr[11]/td/table/tbody/tr/td[12]/a"))))
             
     def tab_jump(self, tab_idx):
         time.sleep(5)
@@ -96,7 +96,7 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
         
-    def first_iteration(self):
+    def page_jump_first_iteration(self):
         if self.page_counter > 1:
                 self.first_page_jump()
         elif self.page_counter > 2:
@@ -104,15 +104,16 @@ class BidScrape():
                 self.page_jump([12, 12]) 
         elif self.page_counter == 0:
             self.page_counter += 1
-        if (self.tab_counter % 10) > 0:
+       
+    def tab_jump_first_iteration(self):
+        if (self.tab_counter % 10) > 1:
             self.tab_jump(self.tab_counter)
-        elif self.tab_counter == 0:
-            self.tab_counter += 1
 
     def scrape(self):
         driver = self.driver
         if self.iteration == 0:
-            self.first_iteration()
+            self.page_jump_first_iteration()
+            self.tab_jump_first_iteration()
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
@@ -148,13 +149,9 @@ class BidScrape():
 #COUNTERS PULL
 path_counters = fr"local_repo\bids\counters.json"
 
-if path.exists(path_counters):
-    with open(path_counters) as c:
-        counters_current = json.load(c)
-        page_counter_current, tab_counter_current = counters_current["page_counter"], counters_current["tab_counter"]
-else:
-    page_counter_current, tab_counter_current = 0, 0
-
+with open(path_counters) as c:
+    counters_current = json.load(c)
+    page_counter_current, tab_counter_current = counters_current["page_counter"], counters_current["tab_counter"]
 
 #INSTANTIATION            
 compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", page_counter_current, tab_counter_current)
@@ -167,7 +164,7 @@ path_providers = fr"local_repo\bids\report_providers.csv"
 path_products = fr"local_repo\bids\report_products.csv"
 
 for n in range(5):
-    counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter} #JSOB COUNTER LOAD
+    counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter}
     with open(path_counters, "w") as write_file:
         json.dump(counters, write_file, indent=4)
     
