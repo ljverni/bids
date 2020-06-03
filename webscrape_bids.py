@@ -28,6 +28,7 @@ class BidScrape():
         self.common_exceptions = (TimeoutException, ElementClickInterceptedException)
         self.page_counter = page_counter
         self.tab_counter = tab_counter
+        self.row_counter = 0
         self.iteration = 0
     
     def query_search(self):
@@ -85,36 +86,41 @@ class BidScrape():
     def enter_process(self, row):
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
+        
+    def first_iteration(self):
+        if self.page_counter > 1:
+                self.first_page_jump()
+        elif self.page_counter > 2:
+            for scraped_pages in range(self.page_counter - 1):
+                self.page_jump([12, 12]) 
+        elif self.page_counter == 0:
+            self.page_counter += 1
+        if (self.tab_counter % 10) > 0:
+            self.tab_jump(self.tab_counter)
+        elif self.tab_counter == 0:
+            self.tab_counter += 1
 
     def scrape(self):
         driver = self.driver
         if self.iteration == 0:
-            if self.page_counter > 0:
-                self.first_page_jump()
-            if self.page_counter > 1:
-                for scraped_pages in range(self.page_counter - 1):
-                    self.page_jump([12, 12])
-            if (self.tab_counter % 10) > 0:
-                self.tab_jump(self.tab_counter)
-            
+            self.first_iteration()
         data_main = {"bid_code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": [], "awarded_bidder": [], "awarded_bidder_id": [], "amount": [], "currency": []}
         data_products = {"bid_code": [], "product": [], "qty": []}
-
-        for row in range(2, 12):
-            row = format(row, "02d")
-            self.enter_process(row)
+        for row in range(1, 11):
+            f_row = format(row+1, "02d")
+            self.enter_process(f_row)
             extracted_data = self.extract()
             self.exit_process()
             print("Row " + str(row) + " scraped")
+            self.row_counter += 1
             for keys in data_main:
                 data_main[keys].append(extracted_data[0][keys])
             for keys in data_products:
                 data_products[keys].append(extracted_data[1][keys])
-        
         if self.tab_counter % 10 == 0 and self.tab_counter != 0:
+            self.page_jump([11, 12])
             self.tab_counter += 1
             self.page_counter += 1
-            self.page_jump([11, 12])
         else:
             self.tab_counter += 1
             self.tab_jump(self.tab_counter)
@@ -128,8 +134,7 @@ path_counters = fr"local_repo\bids\counters.json"
 if path.exists(path_counters):
     with open(path_counters) as c:
         counters_current = json.load(c)
-    for counter in counters_current:
-        page_counter_current, tab_counter_current = counter["page_counter"], counter["tab_counter"]
+        page_counter_current, tab_counter_current = counters_current["page_counter"], counters_current["tab_counter"]
 else:
     page_counter_current, tab_counter_current = 0, 0
 
@@ -140,25 +145,27 @@ compras_ar.query_search()
 
 
 #CSV LOAD
-path_main = fr"local_repo\bids\bids_report.json"
-path_products = fr"local_repo\bids\products_report.json"
+path_main = fr"local_repo\bids\bids_report.csv"
+path_products = fr"local_repo\bids\products_report.csv"
 
 for n in range(1):
     main_data, product_data = compras_ar.scrape()
     
-    df_main = pd.DataFrame().append(main_data, ignore_index=True)
-    df_products = pd.DataFrame().append(product_data, ignore_index=True)
+    df_main = pd.DataFrame(main_data)
+    df_products = pd.DataFrame(product_data)
     
     if path.exists(path_main):
-        df.to_csv(path_main, mode="a", index=False, header=False)
+        df_main.to_csv(path_main, mode="a", index=False, header=False)
     else:
         df_main.to_csv(path_main, index=False)
         
     if path.exists(path_products):
-        df_products.to_csv(path_products, index=False)
-    else:
         df_products.to_csv(path_products, mode="a", index=False, header=False)
+    else:
+        df_products.to_csv(path_products, index=False)
+        
 
+compras_ar.driver.quit()
 
 #JSON COUNTERS LOAD
 counters = {"page_counter": compras_ar.page_counter, "tab_counter": compras_ar.tab_counter}
@@ -171,11 +178,13 @@ t1_stop = perf_counter()
 time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
 timestamp = f"Timestamp: {datetime.now()}"
 pages = f"Pages completed: {compras_ar.page_counter - page_counter_current}\nCurrent page: {compras_ar.page_counter}"
-tabs = f"Tabs completed: {compras_ar.tab_counter - tab_counter_current}\nCurrent page: {compras_ar.tab_counter}"
+tabs = f"Tabs completed: {compras_ar.tab_counter - tab_counter_current}\nCurrent tab: {compras_ar.tab_counter}"
+rows = f"Rows completed: {compras_ar.row_counter}"
 
-log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs 
+log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + rows
+print(log)
 
-if path.exists(path_products):
+if path.exists(path_counters):
     with open(fr"local_repo\bids\bidslog.txt", "a+") as log_file:
         log_file.write("\n------------------------\n")
 else:
