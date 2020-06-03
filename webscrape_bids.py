@@ -25,7 +25,7 @@ class BidScrape():
         accept_next_alert = True
         delay = 3
         self.driver.get(url)
-        self.common_exceptions = (TimeoutException, ElementClickInterceptedException)
+
         self.page_counter = page_counter
         self.tab_counter = tab_counter
         self.row_counter = 0
@@ -46,6 +46,7 @@ class BidScrape():
     def extract(self):
         time.sleep(5)
         selector = self.selector
+        
         #MAIN DICT
         data_main = {         
             "code": selector("s", "span[id*='NumeroProceso']"), 
@@ -97,6 +98,7 @@ class BidScrape():
         driver = self.driver
         if self.iteration == 0:
             self.page_jump()
+        if (self.tab_counter % 10) != 1:
             self.tab_jump()
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
@@ -124,12 +126,12 @@ path_counters = fr"local_repo\bids\counters.json"
 
 with open(path_counters) as c:
     counters_current = json.load(c)
-    page_counter_current, tab_counter_current = counters_current["page_counter"], counters_current["tab_counter"]
+    current_page, current_tab = counters_current["page_counter"], counters_current["tab_counter"]
 
 ###############
 #INSTANTIATION#
 ###############           
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 4, 50)
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", current_page, current_tab)
 compras_ar.query_search()
 
 ##########
@@ -151,9 +153,9 @@ for n in range(5):
     df_providers = pd.DataFrame(data_providers)
     df_products = pd.DataFrame(data_products)
     
-    df_main.to_csv(path_main, mode="a", index=False, header=False)
-    df_providers.to_csv(path_providers, mode="a", index=False, header=False)
-    df_products.to_csv(path_products, mode="a", index=False, header=False)
+    # df_main.to_csv(path_main, mode="a", index=False, header=False)
+    # df_providers.to_csv(path_providers, mode="a", index=False, header=False)
+    # df_products.to_csv(path_products, mode="a", index=False, header=False)
 
 compras_ar.driver.quit()
 
