@@ -123,7 +123,7 @@ class BidScrape():
         
 
 #COUNTERS PULL
-path_counters = fr"local_repo\bids\data_files\counters.json"
+path_counters = fr"local_repo\bids\counters.json"
 
 if path.exists(path_counters):
     with open(path_counters) as c:
@@ -140,8 +140,8 @@ compras_ar.query_search()
 
 
 #CSV LOAD
-path_main = fr"local_repo\bids\data_files\bids_report.json"
-path_products = fr"local_repo\bids\data_files\products_report.json"
+path_main = fr"local_repo\bids\bids_report.json"
+path_products = fr"local_repo\bids\products_report.json"
 
 for n in range(1):
     main_data, product_data = compras_ar.scrape()
@@ -176,8 +176,8 @@ tabs = f"Tabs completed: {compras_ar.tab_counter - tab_counter_current}\nCurrent
 log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs 
 
 if path.exists(path_products):
-    with open(fr"local_repo\bids\data_files\bidslog.txt", "a+") as log_file:
+    with open(fr"local_repo\bids\bidslog.txt", "a+") as log_file:
         log_file.write("\n------------------------\n")
 else:
-    with open(fr"local_repo\bids\data_files\bidslog.txt", "w") as file:
+    with open(fr"local_repo\bids\bidslog.txt", "w") as file:
         file.write(log)
