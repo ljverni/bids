@@ -18,15 +18,12 @@ import json
 
 class BidScrape():
 
-    def __init__(self, url, page_counter, tab_counter):
+    def __init__(self, url):
         self.driver = webdriver.Chrome("\webdrivers\chromedriver.exe")
         self.driver.set_script_timeout(20)
         accept_next_alert = True
         delay = 3
         self.driver.get(url)
-
-        self.page_counter = page_counter
-        self.tab_counter = tab_counter
         self.row_counter = 0
         self.iteration = 0
     
@@ -53,15 +50,16 @@ class BidScrape():
         df_products.to_csv(path_products, mode="a", index=False, header=False)
         
         
-    def counters_save(self):
-        counters = {"page_counter": self.page_counter, "tab_counter": self.tab_counter} 
+    def counters_save(self, page, tab):
+        counters = {"page_counter": page, "tab_counter": tab} 
         with open(fr"local_repo\bids\counters.json", "w") as write_file:
             json.dump(counters, write_file, indent=4)  
             
     def counters_load(self):
         with open(fr"local_repo\bids\counters.json") as c:
             counters_current = json.load(c)
-            self.current_page, self.current_tab = counters_current["page_counter"], counters_current["tab_counter"]
+            current_page, current_tab = counters_current["page_counter"], counters_current["tab_counter"]
+            return current_page, current_tab
         
     def query_search(self):
         driver = self.driver
@@ -75,7 +73,7 @@ class BidScrape():
         elif qty == "m":
             return self.driver.find_elements_by_css_selector(arg)
         
-    def extract(self):
+    def extract_process(self):
         time.sleep(5)
         selector = self.selector
         
@@ -114,11 +112,11 @@ class BidScrape():
     def exit_process(self):
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_lnkVolver']"))))
                    
-    def tab_jump(self):
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[href*='Page${self.tab_counter}']"))))
+    def tab_jump(self, tab):
+        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[href*='Page${tab}']"))))
         
-    def page_jump(self):
-        for i in range(1, self.page_counter + 1):
+    def page_jump(self, page):
+        for i in range(1, page + 1):
             last_tab = f"{i}{1}"
             self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[href*='Page${last_tab}']"))))
          
@@ -126,12 +124,14 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
 
-    def scrape(self):
+    def scrape(self, tab, page):
         driver = self.driver
         if self.iteration == 0:
-            self.page_jump()
-        if (self.tab_counter % 10) != 1:
-            self.tab_jump()
+            self.page_jump(page)
+            if (tab % 10) != 1:
+                self.tab_jump(tab)
+        elif self.iteration > 0:
+            self.tab_jump(tab)
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
@@ -139,39 +139,49 @@ class BidScrape():
         for row in range(1, 11):
             f_row = format(row+1, "02d")
             self.enter_process(f_row)
+            extracted_data = self.extract_process()
             self.exit_process()
             print("Row " + str(row) + " scraped")
             self.row_counter += 1
-        
-        self.tab_counter += 1
-        if (self.tab_counter % 10) == 1:
-            self.page_counter += 1
-        self.tab_jump()
+            
+            for keys in extracted_data[0]: #MAIN DICT
+                data_main[keys].append(extracted_data[0][keys])
+            for key in extracted_data[1]: #PROVIDERS DICT
+                for value in extracted_data[1][key]:
+                    data_providers[key].append(value)     
+            for key in extracted_data[2]: #PRODUCTS DICT
+                for value in extracted_data[2][key]:
+                    data_products[key].append(value)
+    
         self.iteration += 1
-        print("CURRENT TAB" + str(compras_ar.tab_counter))
         return data_main, data_providers, data_products
         
 
-###########
-#EXECUTION#
-###########           
+#####
+#EXE#
+##### 
+t1_start = perf_counter()         
 compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
-compras_ar.counters_load()
 compras_ar.query_search()
 
+
+page, tab = compras_ar.counters_load()
 try:
-    for n in range(5):
-        t1_start = perf_counter()
-        compras_ar.file_save(compras_ar.scrape())
-        compras_ar.counters_save()
+    for n in range(1):
+        print("CURRENT TAB: " + str(tab))
+        data_main, data_providers, data_products = compras_ar.scrape(tab, page)
+        compras_ar.file_save(data_main, data_providers, data_products)
+        tab += 1
+        print(tab)
+        compras_ar.counters_save(int((tab - (tab % 10))/10), tab)
 
 except TimeoutException as error:
     raise error
 
 finally:
     t1_stop = perf_counter() 
-    compras_ar.log_file(t1_start, t1_stop)
-    compras_ar.driver.quit()
+    # compras_ar.log_file(t1_start, t1_stop)
+    # compras_ar.driver.quit()
     
 
 

@@ -8,3 +8,17 @@ Current tab: 2
 Rows completed: 10
 
 ------------------------
+Elapsed time: 6810.6187454(Start), 6841.0435161(Stop) 
+Elapsed time during the whole program in seconds: 30.4247706999995
+Timestamp: 2020-06-03 20:01:17.377913
+Current page: 0
+Current tab: 0
+
+------------------------
+Elapsed time: 7127.846369(Start), 7158.2245126(Stop) 
+Elapsed time during the whole program in seconds: 30.37814359999993
+Timestamp: 2020-06-03 20:06:34.558826
+Current page: 0
+Current tab: 0
+
+------------------------
