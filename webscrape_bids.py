@@ -162,9 +162,9 @@ compras_ar.query_search()
 
 
 #CSV LOAD
-path_main = fr"local_repo\bids\bids_report.csv"
-path_providers = fr"local_repo\bids\providers_report.csv"
-path_products = fr"local_repo\bids\products_report.csv"
+path_main = fr"local_repo\bids\report_bids.csv"
+path_providers = fr"local_repo\bids\report_providers.csv"
+path_products = fr"local_repo\bids\report_products.csv"
 
 for n in range(1):
     data_main, data_providers, data_products = compras_ar.scrape()
