@@ -35,6 +35,10 @@ class BidScrape():
         driver = self.driver
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
         status.options[1].click()
+        date_range = driver.find_elements_by_class_name("dxeEditArea")
+        from_date, to_date = date_range[0], date_range[1]
+        from_date.send_keys("19/08/2016")
+        to_date.send_keys("01/06/2017")
         driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
         
     def selector(self, qty, arg): #Single(s) or Multiple(m) elements
@@ -116,15 +120,8 @@ class BidScrape():
         
 
 #INSTANTIATION            
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 4, 50)
+compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx", 0, 1)
 compras_ar.query_search()
 
 
-#CSV LOAD
-path_main = fr"local_repo\bids\bids_report.csv"
-path_providers = fr"local_repo\bids\providers_report.csv"
-path_products = fr"local_repo\bids\products_report.csv"
-
-
-for i in range(4):
-    compras_ar.scrape()
+compras_ar.scrape()
