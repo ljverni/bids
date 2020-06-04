@@ -66,6 +66,11 @@ class BidScrape():
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
         status.options[1].click()
         driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
+        date_range = driver.find_elements_by_class_name("dxeEditArea")
+        from_date, to_date = date_range[0], date_range[1]
+        from_date.send_keys("19/08/2016")
+        to_date.send_keys("01/06/2017")
+        driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
         
     def selector(self, qty, arg): #SINGLE(s)/MULTIPLE(m) ELEMENTS
         if qty == "s":
