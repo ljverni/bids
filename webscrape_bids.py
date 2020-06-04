@@ -30,7 +30,7 @@ class BidScrape():
     def log_file(self, t1_start, t1_stop, message, rows, error, page, tab):
         time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
         timestamp = f"Timestamp: {datetime.now()}"
-        pages = f"Current page: {page}"
+        pages = f"Parsed pages: {page}"
         tabs = f"Current tab: {tab}"
         log = str(error) + "\n" + message + "\n" + str(rows) + "\n"+ time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + "\n------------------------\n"
         print(log)
@@ -44,11 +44,10 @@ class BidScrape():
         df_main = pd.DataFrame(data_main)
         df_providers = pd.DataFrame(data_providers)
         df_products = pd.DataFrame(data_products)
-    
+        
         df_main.to_csv(path_main, mode="a", index=False, header=False)
         df_providers.to_csv(path_providers, mode="a", index=False, header=False)
         df_products.to_csv(path_products, mode="a", index=False, header=False)
-        
         
     def counters_save(self, page, tab):
         counters = {"page_counter": page, "tab_counter": tab} 
@@ -65,12 +64,12 @@ class BidScrape():
         driver = self.driver
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
         status.options[1].click()
-        driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
         date_range = driver.find_elements_by_class_name("dxeEditArea")
         from_date, to_date = date_range[0], date_range[1]
         from_date.send_keys("19/08/2016")
         to_date.send_keys("01/06/2017")
-        driver.find_element_by_id("ctl00_CPH1_btnListarPliegoAvanzado").click()
+        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.ID, "ctl00_CPH1_btnListarPliegoAvanzado"))))
+        time.sleep(10)
         
     def selector(self, qty, arg): #SINGLE(s)/MULTIPLE(m) ELEMENTS
         if qty == "s":
@@ -167,8 +166,8 @@ class BidScrape():
         self.iteration += 1
         return data_main, data_providers, data_products
     
-    def execute(self, number_of_rows, page, tab):
-        for n in range(number_of_rows):
+    def execute(self, number_of_tabs, page, tab):
+        for n in range(number_of_tabs):
             print("CURRENT TAB: " + str(tab))
             data_main, data_providers, data_products = self.scrape(tab, page)
             self.file_save(data_main, data_providers, data_products)
@@ -186,7 +185,7 @@ try:
     compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
     compras_ar.query_search()
     page, tab = compras_ar.counters_load()
-    compras_ar.execute(100, page, tab)
+    compras_ar.execute(1, page, tab)
     t1_stop = perf_counter()
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)
