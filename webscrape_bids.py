@@ -167,21 +167,21 @@ compras_ar.query_search()
 
 page, tab = compras_ar.counters_load()
 try:
-    for n in range(1):
+    for n in range(10):
         print("CURRENT TAB: " + str(tab))
         data_main, data_providers, data_products = compras_ar.scrape(tab, page)
         compras_ar.file_save(data_main, data_providers, data_products)
         tab += 1
         print(tab)
         compras_ar.counters_save(int((tab - (tab % 10))/10), tab)
+    
 
 except TimeoutException as error:
     raise error
 
-finally:
-    t1_stop = perf_counter() 
-    # compras_ar.log_file(t1_start, t1_stop)
-    # compras_ar.driver.quit()
+t1_stop = perf_counter() 
+compras_ar.log_file(t1_start, t1_stop)
+compras_ar.driver.quit()
     
 
 
