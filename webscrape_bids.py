@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 import re
 import time
@@ -27,12 +27,12 @@ class BidScrape():
         self.row_counter = 0
         self.iteration = 0
     
-    def log_file(self, t1_start, t1_stop):
+    def log_file(self, t1_start, t1_stop, message, rows, error, page, tab):
         time_info = f"Elapsed time: {str(t1_start)}(Start), {str(t1_stop)}(Stop) \nElapsed time during the whole program in seconds: {str(t1_stop-t1_start)}"
         timestamp = f"Timestamp: {datetime.now()}"
-        pages = f"Current page: {self.page_counter}"
-        tabs = f"Current tab: {self.tab_counter}"
-        log = time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + "\n------------------------\n"
+        pages = f"Current page: {page}"
+        tabs = f"Current tab: {tab}"
+        log = str(error) + "\n" + message + "\n" + str(rows) + "\n"+ time_info + "\n" + timestamp + "\n" + pages + "\n" + tabs + "\n" + "\n------------------------\n"
         print(log)
         with open(fr"local_repo\bids\bidslog.txt", "a+") as file:
             file.write(log)  
@@ -138,51 +138,66 @@ class BidScrape():
       
         for row in range(1, 11):
             f_row = format(row+1, "02d")
-            self.enter_process(f_row)
-            extracted_data = self.extract_process()
-            self.exit_process()
-            print("Row " + str(row) + " scraped")
-            self.row_counter += 1
+            try:
+                self.enter_process(f_row)
+                extracted_data = self.extract_process()
+                self.exit_process()
+                print("Row " + str(row) + " scraped")
+                self.row_counter += 1
+                
+                for keys in extracted_data[0]: #MAIN DICT
+                    data_main[keys].append(extracted_data[0][keys])
+                for key in extracted_data[1]: #PROVIDERS DICT
+                    for value in extracted_data[1][key]:
+                        data_providers[key].append(value)     
+                for key in extracted_data[2]: #PRODUCTS DICT
+                    for value in extracted_data[2][key]:
+                        data_products[key].append(value)
+            except (NoSuchElementException, TimeoutException) as error:
+                print(f"Unable to extract row {str(row)} data due to the following error: \n{error}")
+                self.exit_process()
+                self.row_counter += 1
+                continue
             
-            for keys in extracted_data[0]: #MAIN DICT
-                data_main[keys].append(extracted_data[0][keys])
-            for key in extracted_data[1]: #PROVIDERS DICT
-                for value in extracted_data[1][key]:
-                    data_providers[key].append(value)     
-            for key in extracted_data[2]: #PRODUCTS DICT
-                for value in extracted_data[2][key]:
-                    data_products[key].append(value)
-    
         self.iteration += 1
         return data_main, data_providers, data_products
+    
+    def execute(self, number_of_rows, page, tab):
+        for n in range(number_of_rows):
+            print("CURRENT TAB: " + str(tab))
+            data_main, data_providers, data_products = self.scrape(tab, page)
+            self.file_save(data_main, data_providers, data_products)
+            tab += 1
+            print(tab)
+            self.counters_save(int((tab - (tab % 10))/10), tab)
         
 
 #####
 #EXE#
 ##### 
-t1_start = perf_counter()         
-compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
-compras_ar.query_search()
 
-
-page, tab = compras_ar.counters_load()
 try:
-    for n in range(100):
-        print("CURRENT TAB: " + str(tab))
-        data_main, data_providers, data_products = compras_ar.scrape(tab, page)
-        compras_ar.file_save(data_main, data_providers, data_products)
-        tab += 1
-        print(tab)
-        compras_ar.counters_save(int((tab - (tab % 10))/10), tab)
+    t1_start = perf_counter()         
+    compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
+    compras_ar.query_search()
+    page, tab = compras_ar.counters_load()
+    compras_ar.execute(100, page, tab)
+    t1_stop = perf_counter()
+    page, tab = compras_ar.counters_load()
+    compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)
     
+except (TimeoutException, NoSuchElementException, WebDriverException) as error:
+    t1_stop = perf_counter() 
+    page, tab = compras_ar.counters_load()
+    compras_ar.log_file(t1_start, t1_stop, "Extraction process partially Successful, parsed rows: ", compras_ar.row_counter, error, page, tab)
+    t1_start = perf_counter()         
+    compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
+    compras_ar.query_search()
+    page, tab = compras_ar.counters_load()
+    compras_ar.execute(100, page, tab)
 
-except TimeoutException as error:
-    raise error
-
-t1_stop = perf_counter() 
-compras_ar.log_file(t1_start, t1_stop)
-compras_ar.driver.quit()
-    
+finally:
+    compras_ar.driver.quit()
 
 
 

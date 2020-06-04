@@ -22,3 +22,15 @@ Current page: 0
 Current tab: 0
 
 ------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.61)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 70154.434657(Start), 70195.9794489(Stop) 
+Elapsed time during the whole program in seconds: 41.54479189999984
+Timestamp: 2020-06-04 13:37:13.470919
+Current page: 16
+Current tab: 160
+
+------------------------
