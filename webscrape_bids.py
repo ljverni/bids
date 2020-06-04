@@ -167,7 +167,7 @@ compras_ar.query_search()
 
 page, tab = compras_ar.counters_load()
 try:
-    for n in range(10):
+    for n in range(100):
         print("CURRENT TAB: " + str(tab))
         data_main, data_providers, data_products = compras_ar.scrape(tab, page)
         compras_ar.file_save(data_main, data_providers, data_products)
