@@ -63,13 +63,14 @@ class BidScrape():
     def query_search(self):
         driver = self.driver
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
-        status.options[1].click()
         date_range = driver.find_elements_by_class_name("dxeEditArea")
         from_date, to_date = date_range[0], date_range[1]
         from_date.send_keys("19/08/2016")
         to_date.send_keys("01/06/2017")
-        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.ID, "ctl00_CPH1_btnListarPliegoAvanzado"))))
-        time.sleep(10)
+        status.options[1].click()
+        time.sleep(5)
+        self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_btnListarPliegoAvanzado']"))))
+        WebDriverWait(self.driver, 200).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl02_lnkNumeroProceso']")))
         
     def selector(self, qty, arg): #SINGLE(s)/MULTIPLE(m) ELEMENTS
         if qty == "s":
@@ -127,8 +128,8 @@ class BidScrape():
     def enter_process(self, row):
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
-
-    def scrape(self, tab, page):
+        
+    def first_jump(self):
         driver = self.driver
         if self.iteration == 0:
             self.page_jump(page)
@@ -136,6 +137,10 @@ class BidScrape():
                 self.tab_jump(tab)
         elif self.iteration > 0:
             self.tab_jump(tab)
+        
+
+    def scrape(self, tab, page):
+        self.first_jump()
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
@@ -158,23 +163,30 @@ class BidScrape():
                     for value in extracted_data[2][key]:
                         data_products[key].append(value)
             except (NoSuchElementException, TimeoutException) as error:
-                print(f"Unable to extract row {str(row)} data due to the following error: \n{error}")
-                self.exit_process()
-                self.row_counter += 1
-                continue
+                try:
+                    print(f"Unable to extract row {str(row)} data due to the following error: \n{error}")
+                    self.exit_process()
+                    self.row_counter += 1
+                    continue
+                except (NoSuchElementException, TimeoutException) as error:
+                    raise error
             
         self.iteration += 1
         return data_main, data_providers, data_products
     
     def execute(self, number_of_tabs, page, tab):
         for n in range(number_of_tabs):
-            print("CURRENT TAB: " + str(tab))
-            data_main, data_providers, data_products = self.scrape(tab, page)
-            self.file_save(data_main, data_providers, data_products)
-            tab += 1
-            print(tab)
-            self.counters_save(int((tab - (tab % 10))/10), tab)
-        
+            try:
+                print("CURRENT TAB: " + str(tab))
+                data_main, data_providers, data_products = self.scrape(tab, page)
+                self.file_save(data_main, data_providers, data_products)
+                tab += 1
+                self.counters_save(int((tab - (tab % 10))/10), tab)
+            except (NoSuchElementException, TimeoutException) as error:
+                tab += 1
+                self.counters_save(int((tab - (tab % 10))/10), tab)
+                print("Jumping to next tab due to broken row")
+                raise error
 
 #####
 #EXE#
@@ -185,7 +197,7 @@ try:
     compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
     compras_ar.query_search()
     page, tab = compras_ar.counters_load()
-    compras_ar.execute(1, page, tab)
+    compras_ar.execute(10, page, tab)
     t1_stop = perf_counter()
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)

@@ -8,13 +8,14 @@ Parsed pages: 0
 Current tab: 2
 
 ------------------------
+
 Message: 
 
 Extraction process partially Successful, parsed rows: 
 0
-Elapsed time: 1048.6828466(Start), 1103.0424085(Stop) 
-Elapsed time during the whole program in seconds: 54.35956190000002
-Timestamp: 2020-06-04 14:50:58.021099
+Elapsed time: 4847.6261426(Start), 4914.2988121(Stop) 
+Elapsed time during the whole program in seconds: 66.67266949999976
+Timestamp: 2020-06-04 15:54:29.487269
 Parsed pages: 0
 Current tab: 2
 
@@ -23,9 +24,9 @@ Message:
 
 Extraction process partially Successful, parsed rows: 
 0
-Elapsed time: 1298.4442836(Start), 1364.8952877(Stop) 
-Elapsed time during the whole program in seconds: 66.45100409999986
-Timestamp: 2020-06-04 14:55:19.873993
+Elapsed time: 4981.4269236(Start), 5065.4411396(Stop) 
+Elapsed time during the whole program in seconds: 84.01421599999958
+Timestamp: 2020-06-04 15:57:00.640375
 Parsed pages: 0
 Current tab: 2
 
@@ -34,20 +35,119 @@ Message:
 
 Extraction process partially Successful, parsed rows: 
 0
-Elapsed time: 1417.1248609(Start), 1483.9901665(Stop) 
-Elapsed time during the whole program in seconds: 66.86530560000006
-Timestamp: 2020-06-04 14:57:18.968864
+Elapsed time: 5145.6342575(Start), 5232.9709104(Stop) 
+Elapsed time during the whole program in seconds: 87.33665290000044
+Timestamp: 2020-06-04 15:59:48.178551
 Parsed pages: 0
 Current tab: 2
+
+------------------------
+Message: disconnected: not connected to DevTools
+  (Session info: chrome=83.0.4103.61)
+
+Extraction process partially Successful, parsed rows: 
+31
+Elapsed time: 5706.3149443(Start), 8163.6101952(Stop) 
+Elapsed time during the whole program in seconds: 2457.2952508999997
+Timestamp: 2020-06-04 16:48:38.946333
+Parsed pages: 0
+Current tab: 5
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+149
+Elapsed time: 9863.8328663(Start), 16468.9682187(Stop) 
+Elapsed time during the whole program in seconds: 6605.135352400001
+Timestamp: 2020-06-04 19:07:04.302621
+Parsed pages: 1
+Current tab: 18
 
 ------------------------
 No Error
 Extraction process Successful, parsed rows: 
-10
-Elapsed time: 1514.8557755(Start), 2148.9730923(Stop) 
-Elapsed time during the whole program in seconds: 634.1173168000003
-Timestamp: 2020-06-04 15:08:23.951962
-Parsed pages: 0
-Current tab: 3
+9
+Elapsed time: 17414.5587561(Start), 17791.3239657(Stop) 
+Elapsed time during the whole program in seconds: 376.765209600002
+Timestamp: 2020-06-04 19:29:06.658466
+Parsed pages: 1
+Current tab: 19
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+80
+Elapsed time: 18012.6629549(Start), 20235.4681212(Stop) 
+Elapsed time during the whole program in seconds: 2222.8051663000006
+Timestamp: 2020-06-04 20:09:50.802648
+Parsed pages: 2
+Current tab: 27
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+50
+Elapsed time: 21259.8204228(Start), 23339.5642462(Stop) 
+Elapsed time during the whole program in seconds: 2079.7438234
+Timestamp: 2020-06-04 21:01:34.898135
+Parsed pages: 3
+Current tab: 33
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+3
+Elapsed time: 23495.3291238(Start), 23686.086189(Stop) 
+Elapsed time during the whole program in seconds: 190.75706520000313
+Timestamp: 2020-06-04 21:07:21.420738
+Parsed pages: 3
+Current tab: 33
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+7
+Elapsed time: 24666.5732607(Start), 25007.316747(Stop) 
+Elapsed time during the whole program in seconds: 340.7434863000017
+Timestamp: 2020-06-04 21:29:22.651254
+Parsed pages: 3
+Current tab: 34
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+7
+Elapsed time: 25552.8321212(Start), 25830.7383145(Stop) 
+Elapsed time during the whole program in seconds: 277.90619329999754
+Timestamp: 2020-06-04 21:43:06.072615
+Parsed pages: 3
+Current tab: 35
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.61)
+
+Extraction process partially Successful, parsed rows: 
+1
+Elapsed time: 26376.5724791(Start), 26483.0679721(Stop) 
+Elapsed time during the whole program in seconds: 106.49549300000217
+Timestamp: 2020-06-04 21:53:58.396130
+Parsed pages: 3
+Current tab: 34
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 26822.9676044(Start), 26905.5961767(Stop) 
+Elapsed time during the whole program in seconds: 82.62857230000009
+Timestamp: 2020-06-04 22:01:00.925672
+Parsed pages: 3
+Current tab: 35
 
 ------------------------
