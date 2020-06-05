@@ -65,8 +65,8 @@ class BidScrape():
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
         date_range = driver.find_elements_by_class_name("dxeEditArea")
         from_date, to_date = date_range[0], date_range[1]
-        from_date.send_keys("19/08/2016")
-        to_date.send_keys("01/06/2017")
+        from_date.send_keys("01/06/2017")
+        to_date.send_keys("01/01/2018")
         status.options[1].click()
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_btnListarPliegoAvanzado']"))))
@@ -129,7 +129,7 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
         
-    def first_jump(self):
+    def first_jump(self, tab):
         driver = self.driver
         if self.iteration == 0:
             self.page_jump(page)
@@ -140,7 +140,7 @@ class BidScrape():
         
 
     def scrape(self, tab, page):
-        self.first_jump()
+        self.first_jump(tab)
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
@@ -174,8 +174,9 @@ class BidScrape():
         self.iteration += 1
         return data_main, data_providers, data_products
     
-    def execute(self, number_of_tabs, page, tab):
-        for n in range(number_of_tabs):
+    def execute(self, tabs_to_do, page, tab):
+        tab = tab
+        for n in range(tabs_to_do):
             try:
                 print("CURRENT TAB: " + str(tab))
                 data_main, data_providers, data_products = self.scrape(tab, page)
@@ -197,12 +198,13 @@ try:
     compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
     compras_ar.query_search()
     page, tab = compras_ar.counters_load()
-    compras_ar.execute(10, page, tab)
+    compras_ar.execute(234, page, tab)
     t1_stop = perf_counter()
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)
     
 except (TimeoutException, NoSuchElementException, WebDriverException) as error:
+    print(error)
     t1_stop = perf_counter() 
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process partially Successful, parsed rows: ", compras_ar.row_counter, error, page, tab)
@@ -217,4 +219,16 @@ finally:
 
 
 
-
+####DATE SPANS AND ROWS
+"""
+19/08/2016 - 01/06/2017 751 - DONE
+01/06/2017 - 01/01/2018 2342 
+01/01/2018 - 01/06/2018 1789
+01/06/2018 - 01/09/2018 1730
+01/09/2018 - 01/01/2019 3335
+01/01/2019 - 01/04/2019 1511
+01/04/2019 - 01/07/2019 2729
+01/07/2019 - 01/10/2019 3303
+01/10/2019 - 01/01/2020 2457
+01/01/2020 - 04/06/2020 1504
+"""

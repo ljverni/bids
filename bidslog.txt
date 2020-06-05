@@ -151,3 +151,45 @@ Parsed pages: 3
 Current tab: 35
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+10
+Elapsed time: 3.7987186(Start), 333.1019031(Stop) 
+Elapsed time during the whole program in seconds: 329.30318450000004
+Timestamp: 2020-06-04 22:36:56.704324
+Parsed pages: 3
+Current tab: 37
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+10
+Elapsed time: 556.1157603(Start), 926.7741215(Stop) 
+Elapsed time during the whole program in seconds: 370.65836119999994
+Timestamp: 2020-06-04 22:46:50.374507
+Parsed pages: 3
+Current tab: 38
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+350
+Elapsed time: 1541.6178728(Start), 11770.4993299(Stop) 
+Elapsed time during the whole program in seconds: 10228.8814571
+Timestamp: 2020-06-05 01:47:34.718290
+Parsed pages: 7
+Current tab: 72
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+40
+Elapsed time: 11862.1475531(Start), 13100.7567884(Stop) 
+Elapsed time during the whole program in seconds: 1238.6092353000004
+Timestamp: 2020-06-05 02:09:45.032728
+Parsed pages: 7
+Current tab: 76
+
+------------------------
