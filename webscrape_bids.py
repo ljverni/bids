@@ -198,7 +198,7 @@ try:
     compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
     compras_ar.query_search()
     page, tab = compras_ar.counters_load()
-    compras_ar.execute(234, page, tab)
+    compras_ar.execute(230, page, tab)
     t1_stop = perf_counter()
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)

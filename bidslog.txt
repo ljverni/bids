@@ -226,3 +226,39 @@ Parsed pages: 19
 Current tab: 199
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+104
+Elapsed time: 3334.4453653(Start), 6073.0718038(Stop) 
+Elapsed time during the whole program in seconds: 2738.6264385000004
+Timestamp: 2020-06-05 23:14:46.926172
+Parsed pages: 21
+Current tab: 210
+
+------------------------
+Message: unknown error: cannot determine loading status
+from disconnected: received Inspector.detached event
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+104
+Elapsed time: 6221.5402462(Start), 6283.226079(Stop) 
+Elapsed time during the whole program in seconds: 61.685832799999844
+Timestamp: 2020-06-05 23:18:17.079672
+Parsed pages: 21
+Current tab: 210
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+262
+Elapsed time: 7868.377736(Start), 15351.417131(Stop) 
+Elapsed time during the whole program in seconds: 7483.039395
+Timestamp: 2020-06-06 01:49:25.275070
+Parsed pages: 23
+Current tab: 235
+
+------------------------
