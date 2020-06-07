@@ -329,3 +329,13 @@ Parsed pages: 18
 Current tab: 180
 
 ------------------------
+No Error
+Extraction process Successful, parsed rows: 
+1730
+Elapsed time: 78343.9374324(Start), 123861.3427864(Stop) 
+Elapsed time during the whole program in seconds: 45517.405354
+Timestamp: 2020-06-07 07:57:56.736096
+Parsed pages: 17
+Current tab: 174
+
+------------------------
