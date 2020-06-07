@@ -65,8 +65,8 @@ class BidScrape():
         status = Select(driver.find_element_by_id("ctl00_CPH1_ddlEstadoProceso"))
         date_range = driver.find_elements_by_class_name("dxeEditArea")
         from_date, to_date = date_range[0], date_range[1]
-        from_date.send_keys("01/06/2017")
-        to_date.send_keys("01/01/2018")
+        from_date.send_keys("01/06/2018")
+        to_date.send_keys("01/09/2018")
         status.options[1].click()
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_CPH1_btnListarPliegoAvanzado']"))))
@@ -198,7 +198,7 @@ try:
     compras_ar = BidScrape("https://comprar.gob.ar/BuscarAvanzado.aspx")
     compras_ar.query_search()
     page, tab = compras_ar.counters_load()
-    compras_ar.execute(230, page, tab)
+    compras_ar.execute(173, page, tab)
     t1_stop = perf_counter()
     page, tab = compras_ar.counters_load()
     compras_ar.log_file(t1_start, t1_stop, "Extraction process Successful, parsed rows: ", compras_ar.row_counter, "No Error", page, tab)
@@ -222,8 +222,8 @@ finally:
 ####DATE SPANS AND ROWS
 """
 19/08/2016 - 01/06/2017 751 - DONE
-01/06/2017 - 01/01/2018 2342 
-01/01/2018 - 01/06/2018 1789
+01/06/2017 - 01/01/2018 2342 - DONE
+01/01/2018 - 01/06/2018 1789 - DONE
 01/06/2018 - 01/09/2018 1730
 01/09/2018 - 01/01/2019 3335
 01/01/2019 - 01/04/2019 1511

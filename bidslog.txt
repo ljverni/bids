@@ -262,3 +262,70 @@ Parsed pages: 23
 Current tab: 235
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 15470.0778817(Start), 15554.134079(Stop) 
+Elapsed time during the whole program in seconds: 84.05619730000035
+Timestamp: 2020-06-06 01:52:47.996515
+Parsed pages: 23
+Current tab: 236
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 32584.8223545(Start), 32645.9490998(Stop) 
+Elapsed time during the whole program in seconds: 61.12674530000004
+Timestamp: 2020-06-06 06:37:40.232100
+Parsed pages: 0
+Current tab: 1
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+830
+Elapsed time: 55496.1754416(Start), 76889.4599366(Stop) 
+Elapsed time during the whole program in seconds: 21393.284495000007
+Timestamp: 2020-06-06 18:55:04.194770
+Parsed pages: 17
+Current tab: 178
+
+------------------------
+Message: unknown error: cannot determine loading status
+from disconnected: received Inspector.detached event
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+830
+Elapsed time: 77343.8003114(Start), 77350.9909672(Stop) 
+Elapsed time during the whole program in seconds: 7.190655800004606
+Timestamp: 2020-06-06 19:02:45.725927
+Parsed pages: 17
+Current tab: 178
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+18
+Elapsed time: 77404.1001494(Start), 77814.494037(Stop) 
+Elapsed time during the whole program in seconds: 410.3938876000029
+Timestamp: 2020-06-06 19:10:29.229938
+Parsed pages: 18
+Current tab: 180
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 78247.7801758(Start), 78303.7624457(Stop) 
+Elapsed time during the whole program in seconds: 55.98226990000694
+Timestamp: 2020-06-06 19:18:38.500233
+Parsed pages: 18
+Current tab: 180
+
+------------------------
