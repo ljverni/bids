@@ -339,3 +339,70 @@ Parsed pages: 17
 Current tab: 174
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+2023
+Elapsed time: 124062.1595491(Start), 175253.0103853(Stop) 
+Elapsed time during the whole program in seconds: 51190.8508362
+Timestamp: 2020-06-07 22:14:29.056218
+Parsed pages: 20
+Current tab: 204
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+809
+Elapsed time: 178726.3075079(Start), 199647.6938239(Stop) 
+Elapsed time during the whole program in seconds: 20921.38631599999
+Timestamp: 2020-06-08 05:01:04.133594
+Parsed pages: 29
+Current tab: 292
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+5
+Elapsed time: 210557.4652507(Start), 210725.485798(Stop) 
+Elapsed time during the whole program in seconds: 168.0205472999951
+Timestamp: 2020-06-08 08:05:41.982307
+Parsed pages: 33
+Current tab: 335
+
+------------------------
+Message: session not created
+from chrome not reachable
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+5
+Elapsed time: 210741.3829706(Start), 210756.951011(Stop) 
+Elapsed time during the whole program in seconds: 15.568040399986785
+Timestamp: 2020-06-08 08:06:13.448510
+Parsed pages: 0
+Current tab: 1
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+10
+Elapsed time: 211052.1287453(Start), 211364.4131196(Stop) 
+Elapsed time during the whole program in seconds: 312.28437430001213
+Timestamp: 2020-06-08 08:16:20.912173
+Parsed pages: 0
+Current tab: 2
+
+------------------------
+Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="ctl00_CPH1_ddlEstadoProceso"]"}
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 211768.6222658(Start), 211773.7121486(Stop) 
+Elapsed time during the whole program in seconds: 5.089882800006308
+Timestamp: 2020-06-08 08:23:10.212182
+Parsed pages: 0
+Current tab: 2
+
+------------------------
