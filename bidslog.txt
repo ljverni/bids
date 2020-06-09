@@ -406,3 +406,90 @@ Parsed pages: 0
 Current tab: 2
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+52
+Elapsed time: 244172.6669618(Start), 247044.2876207(Stop) 
+Elapsed time during the whole program in seconds: 2871.6206589000067
+Timestamp: 2020-06-08 18:11:01.223771
+Parsed pages: 9
+Current tab: 91
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+361
+Elapsed time: 58.321297(Start), 11765.0348362(Stop) 
+Elapsed time during the whole program in seconds: 11706.7135392
+Timestamp: 2020-06-09 04:59:59.735146
+Parsed pages: 12
+Current tab: 127
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+20
+Elapsed time: 29906.1392088(Start), 30387.7125099(Stop) 
+Elapsed time during the whole program in seconds: 481.5733011000011
+Timestamp: 2020-06-09 10:10:22.591943
+Parsed pages: 15
+Current tab: 152
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 30414.1007618(Start), 30491.5866254(Stop) 
+Elapsed time during the whole program in seconds: 77.48586359999899
+Timestamp: 2020-06-09 10:12:06.460277
+Parsed pages: 12
+Current tab: 127
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+10
+Elapsed time: 30775.4863295(Start), 31038.5827031(Stop) 
+Elapsed time during the whole program in seconds: 263.09637360000124
+Timestamp: 2020-06-09 10:21:13.459749
+Parsed pages: 12
+Current tab: 127
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+660
+Elapsed time: 31649.6393286(Start), 59065.7403903(Stop) 
+Elapsed time during the whole program in seconds: 27416.101061700003
+Timestamp: 2020-06-09 18:08:21.049136
+Parsed pages: 6
+Current tab: 68
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+10
+Elapsed time: 75590.5027021(Start), 75931.6438578(Stop) 
+Elapsed time during the whole program in seconds: 341.1411556999956
+Timestamp: 2020-06-09 22:49:27.106351
+Parsed pages: 6
+Current tab: 68
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+32
+Elapsed time: 76667.4013726(Start), 77875.2256941(Stop) 
+Elapsed time during the whole program in seconds: 1207.8243214999966
+Timestamp: 2020-06-09 23:21:50.908687
+Parsed pages: 8
+Current tab: 82
+
+------------------------
