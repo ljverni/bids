@@ -493,3 +493,135 @@ Parsed pages: 8
 Current tab: 82
 
 ------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+410
+Elapsed time: 12.9678983(Start), 8711.3448229(Stop) 
+Elapsed time during the whole program in seconds: 8698.376924600001
+Timestamp: 2020-06-13 12:15:47.117401
+Parsed pages: 12
+Current tab: 123
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+1500
+Elapsed time: 8782.7750541(Start), 46208.7031634(Stop) 
+Elapsed time during the whole program in seconds: 37425.9281093
+Timestamp: 2020-06-13 22:40:44.478407
+Parsed pages: 27
+Current tab: 273
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+9
+Elapsed time: 51270.0259957(Start), 51552.3385071(Stop) 
+Elapsed time during the whole program in seconds: 282.3125113999995
+Timestamp: 2020-06-14 00:09:48.110857
+Parsed pages: 27
+Current tab: 274
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+612
+Elapsed time: 51748.5694975(Start), 68954.0443455(Stop) 
+Elapsed time during the whole program in seconds: 17205.474848000005
+Timestamp: 2020-06-14 04:59:51.461250
+Parsed pages: 6
+Current tab: 63
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+100
+Elapsed time: 138556.4966178(Start), 141289.0811247(Stop) 
+Elapsed time during the whole program in seconds: 2732.5845068999915
+Timestamp: 2020-06-15 01:05:26.495804
+Parsed pages: 33
+Current tab: 330
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+589
+Elapsed time: 141491.7299297(Start), 155402.2738912(Stop) 
+Elapsed time during the whole program in seconds: 13910.543961499992
+Timestamp: 2020-06-15 05:00:40.834046
+Parsed pages: 6
+Current tab: 60
+
+------------------------
+Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="ctl00_CPH1_ddlEstadoProceso"]"}
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 169622.8764495(Start), 169628.295877(Stop) 
+Elapsed time during the whole program in seconds: 5.419427499989979
+Timestamp: 2020-06-15 08:57:46.853644
+Parsed pages: 6
+Current tab: 70
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+1077
+Elapsed time: 176044.7457333(Start), 204575.1788056(Stop) 
+Elapsed time during the whole program in seconds: 28530.433072300017
+Timestamp: 2020-06-15 18:40:13.732454
+Parsed pages: 20
+Current tab: 200
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+401
+Elapsed time: 208786.5000312(Start), 220409.8615918(Stop) 
+Elapsed time during the whole program in seconds: 11623.361560599995
+Timestamp: 2020-06-15 23:04:08.419290
+Parsed pages: 24
+Current tab: 240
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=83.0.4103.97)
+
+Extraction process partially Successful, parsed rows: 
+1
+Elapsed time: 220477.5148288(Start), 220675.5924308(Stop) 
+Elapsed time during the whole program in seconds: 198.07760200000484
+Timestamp: 2020-06-15 23:08:34.152564
+Parsed pages: 24
+Current tab: 239
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+777
+Elapsed time: 223304.0654233(Start), 244748.4998718(Stop) 
+Elapsed time during the whole program in seconds: 21444.43444850002
+Timestamp: 2020-06-16 05:49:48.260395
+Parsed pages: 7
+Current tab: 79
+
+------------------------
+Message: 
+
+Extraction process partially Successful, parsed rows: 
+939
+Elapsed time: 244821.5349537(Start), 269459.4018048(Stop) 
+Elapsed time during the whole program in seconds: 24637.86685110003
+Timestamp: 2020-06-16 12:41:39.163939
+Parsed pages: 17
+Current tab: 172
+
+------------------------
