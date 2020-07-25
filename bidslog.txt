@@ -625,3 +625,49 @@ Parsed pages: 17
 Current tab: 172
 
 ------------------------
+Message: chrome not reachable
+  (Session info: chrome=84.0.4147.89)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 162.2938797(Start), 223.6679613(Stop) 
+Elapsed time during the whole program in seconds: 61.37408160000001
+Timestamp: 2020-07-24 10:35:47.763612
+Parsed pages: 17
+Current tab: 173
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=84.0.4147.89)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 246.941596(Start), 289.81296(Stop) 
+Elapsed time during the whole program in seconds: 42.87136399999997
+Timestamp: 2020-07-24 10:36:53.909228
+Parsed pages: 0
+Current tab: 0
+
+------------------------
+Message: chrome not reachable
+  (Session info: chrome=84.0.4147.89)
+
+Extraction process partially Successful, parsed rows: 
+0
+Elapsed time: 308.1532405(Start), 374.3843296(Stop) 
+Elapsed time during the whole program in seconds: 66.23108910000002
+Timestamp: 2020-07-24 10:38:18.482099
+Parsed pages: 0
+Current tab: 1
+
+------------------------
+No Error
+Extraction process Successful, parsed rows: 
+550
+Elapsed time: 384.5952049(Start), 18780.9304096(Stop) 
+Elapsed time during the whole program in seconds: 18396.3352047
+Timestamp: 2020-07-24 15:45:05.033547
+Parsed pages: 5
+Current tab: 56
+
+------------------------
