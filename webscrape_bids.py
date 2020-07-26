@@ -129,10 +129,10 @@ class BidScrape():
         time.sleep(5)
         self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,  f"//*[@id='ctl00_CPH1_GridListaPliegos_ctl{row}_lnkNumeroProceso']"))))
         
-    def first_jump(self, tab):
+    def first_jump(self, tab, page):
         driver = self.driver
         if self.iteration == 0:
-            self.page_jump(page)
+            self.page_jump()
             if (tab % 10) != 1:
                 self.tab_jump(tab)
         elif self.iteration > 0:
@@ -140,7 +140,7 @@ class BidScrape():
         
 
     def scrape(self, tab, page):
-        self.first_jump(tab)
+        self.first_jump(tab, page)
         data_main = {"code": [], "name": [], "process": [], "stage": [], "validity": [], "duration": [], "opening": []}
         data_providers = {"bid_code": [], "name": [], "tin": [], "po_number": [], "po_amount": [], "currency": []}
         data_products = {"bid_code": [], "description": [], "qty": []}
@@ -192,6 +192,9 @@ class BidScrape():
 #####
 #EXE#
 ##### 
+
+
+
 
 try:
     t1_start = perf_counter()         
